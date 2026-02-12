@@ -1,7 +1,8 @@
 package com.gymtracker.backend.exercises;
 
-package com.gymtracker.backend.categories.Category;
+import com.gymtracker.backend.categories.Category;
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class Exercise {
@@ -13,6 +14,7 @@ public class Exercise {
 
     @ManyToOne
     @JoinColumn(name = "category_id")
+    @JsonIgnore
     private Category category;
 
     public Long getId() { return id; }

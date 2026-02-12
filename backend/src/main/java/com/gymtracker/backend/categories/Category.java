@@ -1,6 +1,9 @@
 package com.gymtracker.backend.categories;
 
+import com.gymtracker.backend.exercises.Exercise;
 import jakarta.persistence.*;
+import java.util.List;
+import java.util.ArrayList;
 
 @Entity
 public class Category {
@@ -13,6 +16,8 @@ public class Category {
 
     public Category() {}
 
+    @OneToMany(mappedBy = "category", fetch = FetchType.EAGER)
+    private List<Exercise> exercises=new ArrayList<>();
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -20,4 +25,12 @@ public class Category {
     public void setName(String name) { this.name = name; }
     public String getIconUrl() { return iconUrl; }
     public void setIconUrl(String iconUrl) { this.iconUrl = iconUrl; }
+
+    public List<Exercise> getExercises() {
+        return exercises;
+    }
+
+    public void setExercises(List<Exercise> exercises) {
+        this.exercises = exercises;
+    }
 }
