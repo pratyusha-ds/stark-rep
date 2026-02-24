@@ -1,0 +1,6 @@
+* text=auto eol=lf
+
+backend/mvnw text eol=lf
+backend/mvnw.cmd text eol=crlf
+
+frontend/src/app/icon.png binary
