@@ -39,9 +39,7 @@ export default function CategoryItem({ category }: { category: Category }) {
     if (result.success) {
       toast(`${category.name} REMOVED`, { style: redTingeStyle });
     } else {
-      toast.error(result.error || 'Failed to delete', {
-        style: { background: '#ef4444', color: '#fff' },
-      });
+      toast.error(result.error || 'Failed to delete');
       setIsDeleting(false);
     }
   };
@@ -103,7 +101,7 @@ export default function CategoryItem({ category }: { category: Category }) {
         <div className="overflow-hidden border-t border-zinc-900 bg-zinc-900/20">
           <ExerciseList
             exercises={category.exercises}
-            onDeleteExercise={(id) => deleteExerciseAction(id)}
+            onDeleteExercise={deleteExerciseAction}
             onEditExercise={handleEditExercise}
           />
         </div>

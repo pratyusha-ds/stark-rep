@@ -18,7 +18,7 @@ export interface CategoryCardProps {
 
 export interface ExerciseListProps {
   exercises: Exercise[];
-  onDeleteExercise: (id: number) => void;
+  onDeleteExercise: (id: number) => Promise<{ success: boolean; error?: string }>;
   onEditExercise: (exercise: Exercise) => void;
 }
 
