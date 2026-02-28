@@ -2,19 +2,17 @@ package com.gymtracker.backend.workoutsets;
 
 import com.gymtracker.backend.sessions.WorkoutSession;
 import com.gymtracker.backend.sessions.WorkoutSessionRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor 
 public class WorkoutSetService {
 
-    @Autowired
-    private WorkoutSetRepository workoutSetRepository;
-
-    @Autowired
-    private WorkoutSessionRepository sessionRepository;
+    private final WorkoutSetRepository workoutSetRepository;
+    private final WorkoutSessionRepository sessionRepository;
 
     @Transactional
     public List<WorkoutSet> saveAllSets(List<WorkoutSet> sets) {
@@ -22,12 +20,9 @@ public class WorkoutSetService {
             throw new RuntimeException("No sets provided to save");
         }
 
-        WorkoutSession newSession = new WorkoutSession();
-        WorkoutSession savedSession = sessionRepository.save(newSession);
+        WorkoutSession savedSession = sessionRepository.save(new WorkoutSession());
 
-        for (WorkoutSet set : sets) {
-            set.setSession(savedSession);
-        }
+        sets.forEach(set -> set.setSession(savedSession));
 
         return workoutSetRepository.saveAll(sets);
     }

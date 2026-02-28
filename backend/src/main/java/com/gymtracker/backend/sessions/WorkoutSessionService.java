@@ -1,15 +1,15 @@
 package com.gymtracker.backend.sessions;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class WorkoutSessionService {
 
-    @Autowired
-    private WorkoutSessionRepository sessionRepository;
+    private final WorkoutSessionRepository sessionRepository;
 
     public List<WorkoutSession> getAllSessions() {
         return sessionRepository.findAll();
@@ -17,7 +17,14 @@ public class WorkoutSessionService {
 
     @Transactional
     public WorkoutSession createSession() {
-        WorkoutSession session = new WorkoutSession();
-        return sessionRepository.save(session);
+        return sessionRepository.save(new WorkoutSession());
+    }
+    
+    @Transactional
+    public void deleteSession(Long id) {
+        if (!sessionRepository.existsById(id)) {
+            throw new RuntimeException("Session not found");
+        }
+        sessionRepository.deleteById(id);
     }
 }
