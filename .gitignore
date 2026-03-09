@@ -28,9 +28,11 @@ frontend/yarn-debug.log*
 frontend/yarn-error.log*
 frontend/.pnpm-debug.log*
 frontend/.env*
+!frontend/.env.example
 frontend/.vercel/
 frontend/*.tsbuildinfo
 frontend/next-env.d.ts
+frontend/.clerk/
 
 # Backend (Spring Boot / Java)
 backend/HELP.md
