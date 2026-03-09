@@ -11,20 +11,25 @@ import { useUser, useAuth } from '@clerk/nextjs';
 describe('SyncUser Component', () => {
   it('sends user data to the backend when authenticated', async () => {
     const mockToken = 'test-token-123';
-    (useUser as any).mockReturnValue({
+
+    vi.mocked(useUser).mockReturnValue({
       isLoaded: true,
       isSignedIn: true,
       user: {
         primaryEmailAddress: { emailAddress: 'stark@athlete.com' },
         fullName: 'Stark Athlete',
       },
-    });
+    } as unknown as ReturnType<typeof useUser>);
 
-    (useAuth as any).mockReturnValue({
+    vi.mocked(useAuth).mockReturnValue({
       getToken: vi.fn().mockResolvedValue(mockToken),
-    });
+    } as unknown as ReturnType<typeof useAuth>);
 
-    const fetchSpy = vi.spyOn(global, 'fetch');
+    const fetchSpy = vi
+      .spyOn(global, 'fetch')
+      .mockImplementation(() =>
+        Promise.resolve(new Response(JSON.stringify({ success: true }), { status: 200 }))
+      );
 
     render(<SyncUser />);
 
@@ -35,6 +40,10 @@ describe('SyncUser Component', () => {
           method: 'POST',
           headers: expect.objectContaining({
             Authorization: `Bearer ${mockToken}`,
+          }),
+          body: JSON.stringify({
+            email: 'stark@athlete.com',
+            name: 'Stark Athlete',
           }),
         })
       );
