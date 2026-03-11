@@ -1,7 +1,7 @@
-import { auth } from '@clerk/nextjs/server';
 import { Category } from '@/types';
 import CategoryItem from './CategoryItem';
 import { API_BASE_URL } from '@/lib/constants';
+import { getAuthHeaders } from '@/lib/api-utils';
 
 export default async function CategoryList({
   query,
@@ -10,19 +10,15 @@ export default async function CategoryList({
   query: string;
   historyDate?: string;
 }) {
-  const { getToken } = await auth();
-  const token = await getToken();
-
   try {
+    const headers = await getAuthHeaders();
+
     const url = new URL(`${API_BASE_URL}/categories`);
     if (query) url.searchParams.append('search', query);
 
     const res = await fetch(url.toString(), {
       cache: 'no-store',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
+      headers,
       next: { tags: ['categories'] },
     });
 
