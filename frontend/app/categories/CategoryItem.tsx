@@ -5,7 +5,7 @@ import { Category, Exercise, EditTarget } from '@/types';
 import {
   deleteCategoryAction,
   deleteExerciseAction,
-  updateCategoryNameAction,
+  updateCategoryAction,
   updateExerciseAction,
 } from '@/app/categories/actions';
 import CategoryCard from '@/components/categories/CategoryCard';
@@ -64,7 +64,7 @@ export default function CategoryItem({
     if (!editTarget) return;
 
     const result = await (editTarget.type === 'category'
-      ? updateCategoryNameAction(editTarget.id, newName)
+      ? updateCategoryAction(editTarget.id, newName)
       : updateExerciseAction(editTarget.id, newName));
 
     if (result.success) {

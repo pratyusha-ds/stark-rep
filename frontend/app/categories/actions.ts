@@ -20,7 +20,7 @@ export async function createCategoryAction(data: CategoryTemplateValues) {
 }
 
 // UPDATE CATEGORY
-export async function updateCategoryNameAction(id: number, newName: string) {
+export async function updateCategoryAction(id: number, newName: string) {
   if (!id || !newName.trim()) return { success: false, error: 'Invalid name' };
 
   try {
@@ -30,7 +30,7 @@ export async function updateCategoryNameAction(id: number, newName: string) {
       headers,
       body: JSON.stringify({ name: newName.trim() }),
     });
-    return await handleResponse(res, 'Failed to rename category', '/categories');
+    return await handleResponse(res, 'Failed to update category', '/categories');
   } catch (err) {
     return { success: false, error: 'Server connection failed' };
   }
