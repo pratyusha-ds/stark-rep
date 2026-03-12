@@ -37,7 +37,7 @@ export default function CalendarPage() {
           const data = await getWorkoutSessions(token);
           setSessions(data);
         }
-      } catch (err) {
+      } catch {
         setError('Failed to load history.');
       }
     }

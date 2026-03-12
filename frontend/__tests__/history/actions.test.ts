@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest';
 import { getWorkoutSessions } from '@/app/history/actions';
 
 describe('History Actions', () => {
@@ -11,7 +11,7 @@ describe('History Actions', () => {
   it('getWorkoutSessions returns data on success', async () => {
     const mockData = [{ id: 1, date: '2026-01-01', sets: [] }];
 
-    (global.fetch as any).mockResolvedValue({
+    (global.fetch as Mock).mockResolvedValue({
       ok: true,
       json: () => Promise.resolve(mockData),
     });
@@ -30,7 +30,7 @@ describe('History Actions', () => {
   });
 
   it('getWorkoutSessions throws error on server failure', async () => {
-    (global.fetch as any).mockResolvedValue({
+    (global.fetch as Mock).mockResolvedValue({
       ok: false,
       status: 500,
     });

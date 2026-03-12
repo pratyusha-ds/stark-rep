@@ -7,7 +7,7 @@ import Header from '@/components/exercises/Header';
 import ActiveWorkout from '@/components/exercises/ActiveWorkout';
 import SidebarStats from '@/components/exercises/SidebarStats';
 import TrainingLog from '@/components/exercises/TrainingLog';
-import { WorkoutSet } from '@/types';
+import { WorkoutSet, WorkoutSetDTO } from '@/types';
 import { fetchExerciseData, fetchSetsByDate, saveSetAction, deleteSetAction } from './actions';
 
 const generateUniqueId = () => Date.now() + Math.floor(Math.random() * 1000);
@@ -36,11 +36,11 @@ export default function WorkoutSessionPage({
         setExerciseName(exData.name);
 
         const targetDate = historyDate || new Date().toISOString().split('T')[0];
-        const allSets = await fetchSetsByDate(targetDate, token);
+        const allSets: WorkoutSetDTO[] = await fetchSetsByDate(targetDate, token);
 
         const filteredSets = allSets
-          .filter((s: any) => s.exerciseId === parseInt(exerciseId))
-          .map((s: any) => ({
+          .filter((s: WorkoutSetDTO) => s.exerciseId === parseInt(exerciseId))
+          .map((s: WorkoutSetDTO) => ({
             id: s.id,
             weight: s.weight.toString(),
             reps: s.reps.toString(),

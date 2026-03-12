@@ -43,7 +43,7 @@ export default async function CategoryList({
         ))}
       </div>
     );
-  } catch (error) {
+  } catch {
     return (
       <div className="p-6 bg-red-500/10 border border-red-500/20 rounded-2xl text-red-500 text-center">
         <p className="font-bold uppercase tracking-widest text-xs mb-2">System Offline</p>

@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@clerk/nextjs';
 import { History, Calendar, Loader2 } from 'lucide-react';
-import { LogEntry } from '@/types';
+import { LogEntry, WorkoutSessionDTO, WorkoutSetDTO } from '@/types';
 import { fetchAllSessions } from '@/app/exercises/[exerciseId]/actions';
 
 export default function TrainingLog({ exerciseId }: { exerciseId: string }) {
@@ -15,21 +15,31 @@ export default function TrainingLog({ exerciseId }: { exerciseId: string }) {
     const fetchHistory = async () => {
       try {
         const token = await getToken();
-        const sessions = await fetchAllSessions(token);
+        const sessions: WorkoutSessionDTO[] = await fetchAllSessions(token);
 
-        const filteredLog = sessions
-          .map((session: any) => ({
-            date: new Date(session.date).toLocaleDateString('en-US', {
-              month: 'short',
-              day: '2-digit',
-              year: 'numeric',
-            }),
-            sets: session.sets.filter((set: any) => set.exerciseId === parseInt(exerciseId)),
-            totalVolume: session.sets
-              .filter((set: any) => set.exerciseId === parseInt(exerciseId))
-              .reduce((acc: number, set: any) => acc + set.weight * set.reps, 0),
-          }))
-          .filter((entry: any) => entry.sets.length > 0);
+        const filteredLog: LogEntry[] = sessions
+          .map((session: WorkoutSessionDTO) => {
+            const exerciseSets = session.sets.filter(
+              (set: WorkoutSetDTO) => set.exerciseId === parseInt(exerciseId)
+            );
+
+            return {
+              date: new Date(session.date).toLocaleDateString('en-US', {
+                month: 'short',
+                day: '2-digit',
+                year: 'numeric',
+              }),
+              sets: exerciseSets.map((set: WorkoutSetDTO) => ({
+                weight: set.weight,
+                reps: set.reps,
+              })),
+              totalVolume: exerciseSets.reduce(
+                (acc: number, set: WorkoutSetDTO) => acc + set.weight * set.reps,
+                0
+              ),
+            };
+          })
+          .filter((entry: LogEntry) => entry.sets.length > 0);
 
         setHistory(filteredLog);
       } catch (error) {
@@ -76,7 +86,7 @@ export default function TrainingLog({ exerciseId }: { exerciseId: string }) {
                 </span>
               </div>
               <div className="space-y-2">
-                {session.sets.map((set: any, sIdx: number) => (
+                {session.sets.map((set, sIdx) => (
                   <div
                     key={sIdx}
                     className="flex justify-between items-center bg-black/40 p-3 rounded-xl border border-zinc-800/50"

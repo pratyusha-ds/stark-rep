@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest';
 import { getSetsByDate, updateWorkoutSet, deleteWorkoutSet } from '@/app/history/[date]/actions';
 
 describe('Summary Actions', () => {
@@ -10,7 +10,7 @@ describe('Summary Actions', () => {
 
   it('getSetsByDate returns data on success', async () => {
     const mockData = [{ id: 1, exerciseName: 'Bench Press', weight: 100, reps: 10 }];
-    (global.fetch as any).mockResolvedValue({
+    (global.fetch as Mock).mockResolvedValue({
       ok: true,
       json: () => Promise.resolve(mockData),
     });
@@ -24,7 +24,7 @@ describe('Summary Actions', () => {
   });
 
   it('updateWorkoutSet sends PUT request with correct body', async () => {
-    (global.fetch as any).mockResolvedValue({ ok: true });
+    (global.fetch as Mock).mockResolvedValue({ ok: true });
 
     await updateWorkoutSet(1, 100, 10, mockToken);
 
@@ -38,7 +38,7 @@ describe('Summary Actions', () => {
   });
 
   it('deleteWorkoutSet sends DELETE request', async () => {
-    (global.fetch as any).mockResolvedValue({ ok: true });
+    (global.fetch as Mock).mockResolvedValue({ ok: true });
 
     await deleteWorkoutSet(1, mockToken);
 

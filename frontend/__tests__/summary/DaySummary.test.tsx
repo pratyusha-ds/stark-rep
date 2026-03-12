@@ -1,15 +1,15 @@
 import { render, screen, waitFor } from '@testing-library/react';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest';
 import DaySummaryPage from '@/app/history/[date]/page';
 import * as actions from '@/app/history/[date]/actions';
 import { useAuth } from '@clerk/nextjs';
 import { WorkoutSetDTO } from '@/types';
 
 vi.mock('react', async () => {
-  const actual = await vi.importActual<any>('react');
+  const actual = await vi.importActual<typeof import('react')>('react');
   return {
     ...actual,
-    use: (promise: any) => {
+    use: (promise: Promise<unknown>) => {
       if (promise && typeof promise.then === 'function') {
         return { date: '2026-03-12' };
       }
@@ -49,11 +49,11 @@ describe('DaySummaryPage', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    (useAuth as any).mockReturnValue({
+    (useAuth as Mock).mockReturnValue({
       isLoaded: true,
       getToken: () => Promise.resolve('test-token'),
     });
-    (actions.getSetsByDate as any).mockResolvedValue(mockSets);
+    (actions.getSetsByDate as Mock).mockResolvedValue(mockSets);
   });
 
   it('calculates and displays total volume and exercise count', async () => {
@@ -75,7 +75,7 @@ describe('DaySummaryPage', () => {
   });
 
   it('shows empty state when no sets exist', async () => {
-    (actions.getSetsByDate as any).mockResolvedValue([]);
+    (actions.getSetsByDate as Mock).mockResolvedValue([]);
     render(<DaySummaryPage params={mockParams} />);
 
     const emptyMsg = await screen.findByText(/No data for this day/i);

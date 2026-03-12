@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@clerk/nextjs';
 import { Timer, TrendingUp, Loader2 } from 'lucide-react';
-import { SidebarStatsProps } from '@/types';
+import { SidebarStatsProps, WorkoutSessionDTO, WorkoutSetDTO } from '@/types';
 import { fetchAllSessions } from '@/app/exercises/[exerciseId]/actions';
 
 export default function SidebarStats({ exerciseId, currentSets }: SidebarStatsProps) {
@@ -15,14 +15,16 @@ export default function SidebarStats({ exerciseId, currentSets }: SidebarStatsPr
     const fetchHistoricalPB = async () => {
       try {
         const token = await getToken();
-        const sessions = await fetchAllSessions(token);
+        const sessions: WorkoutSessionDTO[] = await fetchAllSessions(token);
 
-        const allSetsForThisExercise = sessions.flatMap((session: any) =>
-          session.sets.filter((set: any) => set.exerciseId === parseInt(exerciseId))
+        const allSetsForThisExercise = sessions.flatMap((session: WorkoutSessionDTO) =>
+          session.sets.filter((set: WorkoutSetDTO) => set.exerciseId === parseInt(exerciseId))
         );
 
         if (allSetsForThisExercise.length > 0) {
-          const maxWeight = Math.max(...allSetsForThisExercise.map((s: any) => s.weight || 0));
+          const maxWeight = Math.max(
+            ...allSetsForThisExercise.map((s: WorkoutSetDTO) => s.weight || 0)
+          );
           setHistoricalPb(maxWeight);
         }
       } catch (error) {

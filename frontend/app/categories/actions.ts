@@ -14,7 +14,7 @@ export async function createCategoryAction(data: CategoryTemplateValues) {
       body: JSON.stringify(data),
     });
     return await handleResponse(res, 'Failed to create category', '/categories');
-  } catch (err) {
+  } catch {
     return { success: false, error: 'Server connection failed' };
   }
 }
@@ -31,7 +31,7 @@ export async function updateCategoryAction(id: number, newName: string) {
       body: JSON.stringify({ name: newName.trim() }),
     });
     return await handleResponse(res, 'Failed to update category', '/categories');
-  } catch (err) {
+  } catch {
     return { success: false, error: 'Server connection failed' };
   }
 }
@@ -45,7 +45,7 @@ export async function deleteCategoryAction(id: number) {
       headers,
     });
     return await handleResponse(res, 'Failed to delete category', '/categories');
-  } catch (err) {
+  } catch {
     return { success: false, error: 'Server connection failed' };
   }
 }
@@ -60,7 +60,7 @@ export async function createExerciseAction(categoryId: number, name: string) {
       body: JSON.stringify({ name: name.trim(), categoryId }),
     });
     return await handleResponse(res, 'Failed to add exercise', '/categories');
-  } catch (err) {
+  } catch {
     return { success: false, error: 'Server connection failed' };
   }
 }
@@ -75,7 +75,7 @@ export async function updateExerciseAction(id: number, name: string) {
       body: JSON.stringify({ name: name.trim() }),
     });
     return await handleResponse(res, 'Failed to update exercise', '/categories');
-  } catch (err) {
+  } catch {
     return { success: false, error: 'Server connection failed' };
   }
 }
@@ -89,7 +89,7 @@ export async function deleteExerciseAction(exerciseId: number) {
       headers,
     });
     return await handleResponse(res, 'Failed to delete exercise', '/categories');
-  } catch (err) {
+  } catch {
     return { success: false, error: 'Server connection failed' };
   }
 }

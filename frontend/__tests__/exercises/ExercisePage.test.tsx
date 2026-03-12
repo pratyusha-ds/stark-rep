@@ -1,16 +1,19 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import WorkoutSessionPage from '@/app/exercises/[exerciseId]/page';
+import React from 'react';
 
 vi.mock('react', async () => {
   const actual = await vi.importActual<typeof import('react')>('react');
   return {
     ...actual,
-    use: (promise: any) => {
-      if (promise && typeof promise.then === 'function') {
+    use: (promise: unknown) => {
+      if (promise && typeof (promise as Promise<unknown>).then === 'function') {
         return { exerciseId: '1' };
       }
-      return actual.use(promise);
+
+      const originalUse = actual.use as (p: unknown) => unknown;
+      return originalUse(promise);
     },
   };
 });

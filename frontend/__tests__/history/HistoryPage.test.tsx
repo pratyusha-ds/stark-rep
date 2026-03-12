@@ -1,5 +1,5 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest';
 import CalendarPage from '@/app/history/page';
 import * as actions from '@/app/history/actions';
 import { useAuth } from '@clerk/nextjs';
@@ -7,6 +7,10 @@ import { useAuth } from '@clerk/nextjs';
 vi.mock('@/app/history/actions', () => ({
   getWorkoutSessions: vi.fn(),
   deleteWorkoutSession: vi.fn(),
+}));
+
+vi.mock('@clerk/nextjs', () => ({
+  useAuth: vi.fn(),
 }));
 
 describe('CalendarPage Component', () => {
@@ -18,13 +22,13 @@ describe('CalendarPage Component', () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
-    (useAuth as any).mockReturnValue({
+    (useAuth as Mock).mockReturnValue({
       isLoaded: true,
       getToken: () => Promise.resolve('test-token'),
       userId: 'test_user',
     });
 
-    (actions.getWorkoutSessions as any).mockResolvedValue(mockSessions);
+    (actions.getWorkoutSessions as Mock).mockResolvedValue(mockSessions);
   });
 
   it('renders the logbook header and current month', () => {
@@ -71,7 +75,7 @@ describe('CalendarPage Component', () => {
   });
 
   it('displays error message on fetch failure', async () => {
-    (actions.getWorkoutSessions as any).mockRejectedValue(new Error('Fetch failed'));
+    (actions.getWorkoutSessions as Mock).mockRejectedValue(new Error('Fetch failed'));
 
     render(<CalendarPage />);
 
