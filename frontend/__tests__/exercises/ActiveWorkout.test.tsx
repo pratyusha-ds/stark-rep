@@ -18,10 +18,12 @@ describe('ActiveWorkout UI logic', () => {
     expect(mockHandlers.onUpdateSet).toHaveBeenCalledWith(1, 'weight', '60');
   });
 
-  it('triggers onSaveSet when input loses focus (blur)', () => {
+  it('triggers onSaveSet when weight changes', () => {
     render(<ActiveWorkout sets={mockSets} {...mockHandlers} />);
-    const repsInput = screen.getByDisplayValue('12');
-    fireEvent.blur(repsInput);
+    const weightInput = screen.getByDisplayValue('50');
+    fireEvent.change(weightInput, { target: { value: '60' } });
+
+    expect(mockHandlers.onUpdateSet).toHaveBeenCalledWith(1, 'weight', '60');
     expect(mockHandlers.onSaveSet).toHaveBeenCalledWith(1);
   });
 

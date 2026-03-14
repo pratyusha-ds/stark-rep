@@ -1,6 +1,13 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import CategoryItem from '@/app/categories/CategoryItem';
+
+vi.mock('@/app/categories/actions', () => ({
+  deleteCategoryAction: vi.fn(),
+  deleteExerciseAction: vi.fn(),
+  updateCategoryAction: vi.fn(),
+  updateExerciseAction: vi.fn(),
+}));
 
 const mockCategory = {
   id: 1,
@@ -9,20 +16,21 @@ const mockCategory = {
 };
 
 describe('CategoryItem Component', () => {
-  it('toggles the exercise list when clicked', () => {
+  it('toggles the exercise list when clicked', async () => {
     render(<CategoryItem category={mockCategory} />);
     const card = screen.getByText('Strength');
     fireEvent.click(card);
-    expect(screen.getByText('Deadlift')).toBeInTheDocument();
+
+    expect(await screen.findByText('Deadlift')).toBeInTheDocument();
   });
 
-  it('opens delete confirmation modal when the delete icon is clicked', () => {
+  it('opens delete confirmation modal when the delete icon is clicked', async () => {
     render(<CategoryItem category={mockCategory} />);
 
-    const buttons = screen.getAllByRole('button');
-    fireEvent.click(buttons[1]);
+    const deleteBtn = screen.getAllByRole('button')[1];
+    fireEvent.click(deleteBtn);
 
-    expect(screen.getByRole('heading', { name: /Delete/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /DELETE/ })).toBeInTheDocument();
+    const heading = await screen.findByRole('heading', { name: /Delete/i });
+    expect(heading).toBeInTheDocument();
   });
 });

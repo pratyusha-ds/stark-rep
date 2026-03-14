@@ -9,6 +9,14 @@ export default function RestTimer() {
   const params = useParams();
   const exerciseId = params?.exerciseId as string;
 
+  const [hasMounted, setHasMounted] = useState(false);
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => {
+      setHasMounted(true);
+    });
+    return () => cancelAnimationFrame(frame);
+  }, []);
+
   const [targetSeconds, setTargetSeconds] = useState(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem(`rest-pref-${exerciseId}`);
@@ -17,19 +25,23 @@ export default function RestTimer() {
     return 90;
   });
 
-  const [prevExerciseId, setPrevExerciseId] = useState(exerciseId);
-  if (exerciseId !== prevExerciseId) {
-    setPrevExerciseId(exerciseId);
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem(`rest-pref-${exerciseId}`);
-      const val = saved ? parseInt(saved, 10) : 90;
-      setTargetSeconds(val);
-    }
-  }
-
   const [timeLeft, setTimeLeft] = useState(0);
   const [status, setStatus] = useState<'IDLE' | 'RUNNING' | 'FINISHED'>('IDLE');
   const [showPicker, setShowPicker] = useState(false);
+
+  useEffect(() => {
+    const saved = localStorage.getItem(`rest-pref-${exerciseId}`);
+    const savedValue = saved ? parseInt(saved, 10) : 90;
+
+    const timeout = setTimeout(() => {
+      setTargetSeconds(savedValue);
+      setTimeLeft(0);
+      setStatus('IDLE');
+      setShowPicker(false);
+    }, 0);
+
+    return () => clearTimeout(timeout);
+  }, [exerciseId]);
 
   const formatTime = (s: number) => {
     const mins = Math.floor(s / 60);
@@ -39,7 +51,6 @@ export default function RestTimer() {
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
-
     if (status === 'RUNNING') {
       interval = setInterval(() => {
         setTimeLeft((prev) => {
@@ -51,7 +62,6 @@ export default function RestTimer() {
         });
       }, 1000);
     }
-
     return () => clearInterval(interval);
   }, [status]);
 
@@ -68,9 +78,7 @@ export default function RestTimer() {
     setShowPicker(false);
   };
 
-  const pauseTimer = () => {
-    setStatus('IDLE');
-  };
+  const pauseTimer = () => setStatus('IDLE');
 
   const resetToFull = (e?: React.MouseEvent) => {
     e?.stopPropagation();
@@ -80,8 +88,20 @@ export default function RestTimer() {
 
   const updateTargetSeconds = (val: number) => {
     setTargetSeconds(val);
-    localStorage.setItem(`rest-pref-${exerciseId}`, val.toString());
+    try {
+      localStorage.setItem(`rest-pref-${exerciseId}`, val.toString());
+    } catch (e) {
+      console.warn('LocalStorage access denied', e);
+    }
   };
+
+  if (!hasMounted) {
+    return (
+      <div className="bg-zinc-900 border border-zinc-800 p-6 rounded-[2rem] min-h-35 flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-zinc-800 border-t-primary rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="bg-zinc-900 border border-zinc-800 p-6 rounded-[2rem] relative overflow-hidden group min-h-35 flex flex-col justify-center">
@@ -161,11 +181,9 @@ export default function RestTimer() {
                 status === 'RUNNING' ? 'text-primary' : 'text-white'
               )}
             >
-              {status === 'RUNNING'
+              {status === 'RUNNING' || timeLeft > 0
                 ? formatTime(timeLeft)
-                : timeLeft > 0
-                  ? formatTime(timeLeft)
-                  : formatTime(targetSeconds)}
+                : formatTime(targetSeconds)}
             </p>
 
             <div className="flex items-center gap-2">
@@ -177,7 +195,7 @@ export default function RestTimer() {
                 )}
               >
                 {status === 'RUNNING' ? (
-                  <>Pause Timer</>
+                  'Pause Timer'
                 ) : (
                   <>
                     <Play className="w-3 h-3 fill-current" />

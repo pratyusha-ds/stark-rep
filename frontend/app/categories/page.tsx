@@ -30,12 +30,6 @@ export default async function Page({
               </div>
             )}
           </div>
-
-          {historyDate && (
-            <p className="text-zinc-500 text-[10px] font-medium uppercase tracking-widest italic">
-              You are adding sets to a past session.
-            </p>
-          )}
         </div>
 
         <SearchBar />
