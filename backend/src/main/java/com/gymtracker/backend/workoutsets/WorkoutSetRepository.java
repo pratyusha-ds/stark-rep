@@ -8,6 +8,8 @@ import java.util.List;
 @Repository
 public interface WorkoutSetRepository extends JpaRepository<WorkoutSet, Long> {
 
+    long countBySessionId(Long sessionId);
+
     List<WorkoutSet> findByExerciseIdAndSessionUserClerkIdOrderBySessionDateDesc(Long exerciseId, String clerkId);
 
     List<WorkoutSet> findBySessionDateAndSessionUserClerkId(LocalDate date, String clerkId);

@@ -18,7 +18,7 @@ describe('AddCategoryModal', () => {
     const openButton = screen.getByRole('button');
     fireEvent.click(openButton);
 
-    const exercisesHeader = screen.getByRole('heading', { name: /^exercises$/i });
+    const exercisesHeader = await screen.findByRole('heading', { name: /^exercises$/i });
     const exercisesSection = exercisesHeader.closest('div');
     const addBtn = exercisesSection?.querySelector('button');
 
@@ -26,10 +26,9 @@ describe('AddCategoryModal', () => {
 
     fireEvent.click(addBtn);
 
-    const inputs = screen.getAllByPlaceholderText(/Exercise name.../i);
+    const inputs = await screen.findAllByPlaceholderText(/Exercise name.../i);
     expect(inputs.length).toBe(1);
   });
-
   it('shows a validation error if the category name is missing on submit', async () => {
     render(<AddCategoryModal />);
     fireEvent.click(screen.getByRole('button'));

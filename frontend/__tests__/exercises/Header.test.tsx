@@ -6,6 +6,7 @@ describe('Header Component', () => {
   const mockProps = {
     exerciseName: 'Squats',
     onFinish: vi.fn(),
+    onViewSummary: vi.fn(),
   };
 
   it('renders the exercise name correctly', () => {
@@ -20,9 +21,10 @@ describe('Header Component', () => {
     expect(mockProps.onFinish).toHaveBeenCalledTimes(1);
   });
 
-  it('contains a link to the summary page', () => {
+  it('calls onViewSummary when View Summary button is clicked', () => {
     render(<Header {...mockProps} />);
-    const summaryBtn = screen.getByRole('link', { name: /VIEW SUMMARY/i });
-    expect(summaryBtn).toHaveAttribute('href', expect.stringContaining('/history/'));
+    const summaryBtn = screen.getByRole('button', { name: /VIEW SUMMARY/i });
+    fireEvent.click(summaryBtn);
+    expect(mockProps.onViewSummary).toHaveBeenCalledTimes(1);
   });
 });

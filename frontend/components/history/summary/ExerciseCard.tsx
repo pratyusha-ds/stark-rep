@@ -53,8 +53,10 @@ export function ExerciseCard({ exerciseName, sets, onDelete, onUpdate }: Exercis
                 className="bg-transparent font-black text-primary text-center outline-none w-full"
                 onBlur={(e) => onUpdate(set.id, set.weight, Number(e.target.value))}
               />
+
               <button
                 onClick={() => setDeletingId(set.id)}
+                aria-label="delete-set"
                 className="flex justify-end text-zinc-700 hover:text-red-500"
               >
                 <Trash2 size={16} />

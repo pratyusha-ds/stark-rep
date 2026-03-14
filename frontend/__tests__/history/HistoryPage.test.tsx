@@ -52,6 +52,10 @@ describe('CalendarPage Component', () => {
   it('navigates to the next month when clicking the right arrow', async () => {
     render(<CalendarPage />);
 
+    await waitFor(() => {
+      expect(actions.getWorkoutSessions).toHaveBeenCalled();
+    });
+
     const navButtons = screen.getAllByRole('button');
     const nextButton = navButtons.find((btn) =>
       btn.querySelector('svg')?.classList.contains('lucide-chevron-right')
@@ -59,10 +63,15 @@ describe('CalendarPage Component', () => {
 
     if (nextButton) {
       fireEvent.click(nextButton);
+
       const nextMonthDate = new Date();
       nextMonthDate.setMonth(nextMonthDate.getMonth() + 1);
       const nextMonthName = nextMonthDate.toLocaleString('default', { month: 'long' });
-      expect(screen.getByText(new RegExp(nextMonthName, 'i'))).toBeInTheDocument();
+
+      const monthDisplay = await screen.findByText(new RegExp(nextMonthName, 'i'));
+      expect(monthDisplay).toBeInTheDocument();
+    } else {
+      throw new Error('Next month button not found');
     }
   });
 
