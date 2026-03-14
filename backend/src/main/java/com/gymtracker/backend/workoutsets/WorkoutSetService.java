@@ -108,7 +108,17 @@ public class WorkoutSetService {
                 if (!set.getSession().getUser().getClerkId().equals(getClerkUserId())) {
                         throw new RuntimeException("Unauthorized");
                 }
+
+                WorkoutSession session = set.getSession();
+                Long sessionId = session.getId();
+
                 workoutSetRepository.delete(set);
+
+                workoutSetRepository.flush();
+
+                if (workoutSetRepository.countBySessionId(sessionId) == 0) {
+                        sessionRepository.delete(session);
+                }
         }
 
         public List<WorkoutSet> getHistoryByExercise(Long exerciseId) {
