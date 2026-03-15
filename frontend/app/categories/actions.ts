@@ -6,7 +6,7 @@ import { API_BASE_URL } from '@/lib/constants';
 import { getAuthHeaders, handleResponse } from '@/lib/api-utils';
 
 const invalidateCategoryCache = () => {
-  // @ts-ignore - Ignore the argument count error for the build
+  //@ts-expect-error - Ignore the argument count error for the build
   revalidateTag('categories');
 };
 

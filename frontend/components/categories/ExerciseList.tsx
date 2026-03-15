@@ -7,7 +7,6 @@ import Link from 'next/link';
 import DeleteConfirmModal from '@/components/categories/DeleteConfirmModal';
 import AddCategoryModal from '@/components/categories/AddCategoryModal';
 import { toast } from 'sonner';
-import { Button } from '@/components/ui/button';
 
 interface ExtendedExerciseListProps extends ExerciseListProps {
   categoryName: string;
